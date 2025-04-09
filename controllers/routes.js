@@ -35,8 +35,19 @@ blogRouter.delete('/:id',async (request, response) => {
    else if(deletedDoc.user.toString() !== user.id.toString()){
       return response.status(401).json({error: "Unauthorized account"})
    }
-
+   await Blog.findByIdAndDelete(id)
    return response.status(200).json({message :"Succcesful Deletion"})
+})
+blogRouter.put('/:id',async (request, response) => {
+  const id = request.params.id
+  const updatedBlog = await Blog.findByIdAndUpdate(id, {$inc:{likes:1}}, {new:true})
+  //console.log(updatedBlog)
+
+  if(!updatedBlog){
+    return response.status(404).json({message:"User not found"})
+  }
+
+  response.status(200).json(updatedBlog)
 })
 
 blogRouter.put('/',async (request, response) => {
